@@ -20,7 +20,7 @@ class Model():
 
     def calculate(self):
         try:
-            self.expr = str(eval(self.expr))
+            self.expr = str(round(eval(self.expr), 4))
         except:
             self.expr = ''
 
@@ -73,25 +73,28 @@ class View():
         self.zero = Tk.Button(frame, text="0")
         self.zero.grid(row=4, column=1)
 
+        self.decimal = Tk.Button(frame, text=".")
+        self.decimal.grid(row=4, column=2)
+
     def _add_operations_keypad(self, frame):
         #operations pad
         self.clear = Tk.Button(frame, text="C")
         self.clear.grid(row=4, column=0)
 
         self.equal = Tk.Button(frame, text="=")
-        self.equal.grid(row=4, column=2)
+        self.equal.grid(row=4, column=3)
 
         self.add = Tk.Button(frame, text="+")
-        self.add.grid(row=2, column=5)
+        self.add.grid(row=2, column=3)
 
         self.sub = Tk.Button(frame, text="-")
-        self.sub.grid(row=3, column=5)
+        self.sub.grid(row=3, column=3)
 
         self.mul = Tk.Button(frame, text="*")
-        self.mul.grid(row=2, column=6)
+        self.mul.grid(row=2, column=4)
 
         self.div = Tk.Button(frame, text="/")
-        self.div.grid(row=3, column=6)
+        self.div.grid(row=3, column=4)
 
     def __init__(self):
         self.root = Tk.Tk()
@@ -105,7 +108,7 @@ class View():
 
 
     def refresh(self, value):
-        self.display.config(text= value)
+        self.display.config(text=value)
 
     def attach_keyboard(self, callback):
         self.root.bind("<Key>", callback)
@@ -132,6 +135,7 @@ class Controller():
         self.view.eight.bind("<Button>", lambda event, n=8: self.num_callback(n))
         self.view.nine.bind("<Button>", lambda event, n=9: self.num_callback(n))
         self.view.zero.bind("<Button>", lambda event, n=0: self.num_callback(n))
+        self.view.decimal.bind("<Button>", lambda event, s='.': self.symbol_callback(s))
         self.view.add.bind("<Button>", lambda event, op='+': self.operation_callback(op))
         self.view.sub.bind("<Button>", lambda event, op='-': self.operation_callback(op))
         self.view.mul.bind("<Button>", lambda event, op='*': self.operation_callback(op))
@@ -157,6 +161,11 @@ class Controller():
         self.model.event(operation)
         self.view.refresh(self.model.value)
         print('operation: {}'.format(operation))
+
+    def symbol_callback(self, symbol):
+        self.model.event(symbol)
+        self.view.refresh(self.model.value)
+        print('symbol: {}'.format(symbol))
 
     def equal(self, event):
         self.model.calculate()
