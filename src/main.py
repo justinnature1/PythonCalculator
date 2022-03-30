@@ -150,6 +150,15 @@ class Controller():
         '''This is where you handle keystroke events from user,
         controller should invoke necessary methods on view and
         refresh view'''
+        if len(event.char) > 0:
+            if event.char == '=' or event.keysym == 'Return':
+                self.equal(event)
+            elif ((48 <= ord(event.char) <= 57) or event.char == '.'
+                  or event.char == '+' or event.char == '-' or event.char == '*' or event.char == '/'):
+                self.model.event(event.char)
+                self.view.refresh(self.model.value)
+            elif (event.char == 'c'):
+                self.clear(event)
         print('keystroke: {}'.format(event.keysym))
 
     def num_callback(self, num):
